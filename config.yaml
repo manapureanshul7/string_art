@@ -1,0 +1,53 @@
+canvas:
+  shape: circular          # circular | rectangular (rectangular = future)
+  diameter_mm: 500         # used if shape = circular
+  # width_mm: 400          # used if shape = rectangular (commented out for now)
+  # height_mm: 400
+  nail_spacing_mm: 6      # distance between adjacent nails along perimeter
+  nail_diameter_mm: 2      # physical nail head size (affects line rendering accuracy)
+  canvas_resolution_px: 700    # 1px = 1mm at 500mm diameter; increase for quality
+
+input_image: input/img2.png  # path to input image (supports PNG, JPEG, etc.)
+
+algorithm:
+  mode: bw
+  max_lines: 5000
+  skip_neighbors: 20      # proven value for ~256 nails in production implementations
+  opacity: 0.3            # replaces line_darkness — higher = brighter final image
+  lines_per_round: 200
+  gamma: 0.7     # boost mid-tones; 1.0 = no change
+
+threads:
+  - id: T1
+    color_hex: "#1a1a1a"
+    material: cotton
+    max_tension_N: 15.0
+    z_priority: 1          # base/background layer
+    available: true
+
+  # Example multi-color setup (commented out until color mode is active)
+  # - id: T2
+  #   color_hex: "#c0392b"
+  #   material: nylon
+  #   max_tension_N: 20.0
+  #   z_priority: 1        # same as T1 → interleaved with T1
+  #   available: true
+
+  # - id: T3
+  #   color_hex: "#f1c40f"
+  #   material: cotton
+  #   max_tension_N: 15.0
+  #   z_priority: 2        # laid after all z=1 threads finish
+  #   available: true
+
+  # - id: T4
+  #   color_hex: "#ffffff"
+  #   material: polyester
+  #   max_tension_N: 18.0
+  #   z_priority: 3        # highlight layer, laid last
+  #   available: true
+
+output:
+  format: json             # json | csv | gcode (gcode = future)
+  filepath: ./output/instructions.json
+  include_nail_positions: true   # embed absolute XY coords in output
